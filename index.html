@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24点游戏</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="playerSetup" class="container">
+        <h1>玩家信息</h1>
+        <div class="setup-form">
+            <input type="text" id="playerNameInput" placeholder="输入你的姓名...">
+            <select id="playerGradeSelect">
+                <option value="1">一年级</option>
+                <option value="2" selected>二年级</option>
+                <option value="3">三年级</option>
+                <option value="4">四年级</option>
+                <option value="5">五年级</option>
+                <option value="6">六年级</option>
+            </select>
+            <button id="savePlayerBtn">开始游戏</button>
+        </div>
+    </div>
+
+    <div id="mainGame" class="container" style="display: none;">
+        <div class="audio-control-container">
+            <button id="muteBtn">🔇</button>
+        </div>
+        <div class="loader-container" id="loaderContainer" style="display: none;">
+            <div class="loader"></div>
+            <p>正在寻找合适的数字组合...</p>
+        </div>
+        <h1>24点游戏</h1>
+        <div class="player-info-container">
+            <span id="playerNameDisplay"></span> | 
+            <span id="playerGradeDisplay"></span> | 
+            分数: <span id="playerScoreDisplay">0</span>
+            <button id="resetScoreBtn" class="player-action-btn">重置分数</button>
+            <button id="logoutBtn" class="player-action-btn">退出登录</button>
+        </div>
+        <div class="difficulty-selector-container">
+            <label for="difficultySelector">选择难度:</label>
+            <select id="difficultySelector">
+                <option value="paper">白纸</option>
+                <option value="plastic">塑料</option>
+                <option value="wood">木头</option>
+                <option value="bronze">青铜</option>
+                <option value="silver">白银</option>
+                <option value="gold" selected>黄金</option>
+                <option value="platinum">铂金</option>
+                <option value="diamond">钻石</option>
+                <option value="king">王者</option>
+                <option value="extreme">极限</option>
+            </select>
+            <button id="startGameBtn">开始游戏</button>
+        </div>
+        <div class="game-container" id="gameContainer" style="display: none;">
+            <div class="numbers-container">
+                <div class="number-card" id="number1"></div>
+                <div class="number-card" id="number2"></div>
+                <div class="number-card" id="number3"></div>
+                <div class="number-card" id="number4"></div>
+            </div>
+            <div class="solution-info">
+                <p>可能的组合数: <span id="combinationCount">0</span></p>
+            </div>
+            <div class="input-container">
+                <input type="text" id="solutionInput" placeholder="输入你的算式...">
+                <button id="checkBtn">检查</button>
+                <button id="showSolutionBtn">查看答案</button>
+                <button id="newGameBtn">新游戏</button>
+            </div>
+            <div id="result" class="result"></div>
+            <div id="solutions" class="solutions"></div>
+        </div>
+        <div class="credit">xx制作 202508</div>
+    </div>
+    <audio id="backgroundMusic" src="kb.mp3" loop></audio>
+    <script src="sounds.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
