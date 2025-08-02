@@ -35,9 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let allSolutions = [];
     let foundSolutions = new Set(); // 用于存储本局已找到的解法
     let hasViewedSolutions = false; // 用于标记本局是否已查看答案
-    let currentDifficulty = 'gold';
-    let isMusicPlaying = false;
-    let playerData = {};
+let currentDifficulty = 'gold';
+let isMusicPlaying = false;
 
     // 难度设置
     const difficulties = {
@@ -53,18 +52,44 @@ document.addEventListener('DOMContentLoaded', () => {
         extreme: { min: 1, max: 1, findHardest: true }
     };
 
-    // --- 玩家数据处理 ---
-    function loadPlayerData() {
-        const data = localStorage.getItem('playerData');
-        if (data) {
-            playerData = JSON.parse(data);
-            return true;
+// --- 玩家数据处理 ---
+const ALL_PLAYERS_DATA_KEY = '24PointGameAllPlayers';
+let allPlayersData = {}; // 存储所有玩家的数据
+let currentPlayerData = {}; // 当前登录的玩家数据
+
+    // 加载所有玩家数据
+    function loadAllPlayersData() {
+        const data = localStorage.getItem(ALL_PLAYERS_DATA_KEY);
+        try {
+            if (data) {
+                allPlayersData = JSON.parse(data);
+                if (typeof allPlayersData !== 'object' || allPlayersData === null) {
+                    allPlayersData = {};
+                }
+            } else {
+                allPlayersData = {};
+            }
+        } catch (e) {
+            console.error("无法解析玩家数据，将重置:", e);
+            allPlayersData = {};
         }
-        return false;
     }
 
-    function savePlayerData() {
-        localStorage.setItem('playerData', JSON.stringify(playerData));
+    // 保存所有玩家数据
+    function saveAllPlayersData() {
+        localStorage.setItem(ALL_PLAYERS_DATA_KEY, JSON.stringify(allPlayersData));
+    }
+    
+    // 保存当前玩家的数据到总数据中
+    function saveCurrentPlayerData() {
+        if (playerData && playerData.name) {
+            // 只保存成绩和年级，名字作为key
+            allPlayersData[playerData.name] = {
+                score: playerData.score,
+                grade: playerData.grade
+            };
+            saveAllPlayersData();
+        }
     }
 
     function updatePlayerInfoDisplay() {
@@ -73,31 +98,49 @@ document.addEventListener('DOMContentLoaded', () => {
         playerScoreDisplay.textContent = playerData.score;
     }
 
-    function initializePlayer() {
-        if (loadPlayerData()) {
-            playerSetup.style.display = 'none';
-            mainGame.style.display = 'block';
-            updatePlayerInfoDisplay();
-            setMusicState(true); // 尝试自动播放音乐
-        } else {
-            playerSetup.style.display = 'block';
-            mainGame.style.display = 'none';
-        }
+    // 初始化函数，页面加载时调用
+    function initializeGame() {
+        loadAllPlayersData();
+        // 默认显示登录界面
+        playerSetup.style.display = 'block';
+        mainGame.style.display = 'none';
     }
 
     savePlayerBtn.addEventListener('click', () => {
         const name = playerNameInput.value.trim();
+        const grade = playerGradeSelect.value;
         if (!name) {
             alert('请输入你的姓名！');
             return;
         }
-        playerData = {
-            name: name,
-            grade: playerGradeSelect.value,
-            score: 0
-        };
-        savePlayerData();
-        initializePlayer();
+
+        if (allPlayersData[name]) {
+            // 玩家存在，加载数据
+            playerData = {
+                name: name,
+                grade: allPlayersData[name].grade, // 可以选择更新或保留旧年级
+                score: allPlayersData[name].score
+            };
+            // 如果玩家选择了新的年级，可以更新它
+            if (allPlayersData[name].grade !== grade) {
+                playerData.grade = grade;
+            }
+        } else {
+            // 新玩家
+            playerData = {
+                name: name,
+                grade: grade,
+                score: 0
+            };
+        }
+        
+        saveCurrentPlayerData(); // 保存当前玩家信息到总列表
+        
+        // 切换到游戏界面
+        playerSetup.style.display = 'none';
+        mainGame.style.display = 'block';
+        updatePlayerInfoDisplay();
+        setMusicState(true); // 尝试自动播放音乐
     });
 
     // --- 音乐控制 ---
@@ -135,21 +178,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetScore() {
         if (confirm('你确定要将分数重置为0吗？')) {
             playerData.score = 0;
-            savePlayerData();
+            saveCurrentPlayerData(); // 保存更改
             updatePlayerInfoDisplay();
             alert('分数已成功重置！');
         }
     }
 
     function logout() {
-        if (confirm('你确定要退出登录吗？所有进度将不会被保存。')) {
-            localStorage.removeItem('playerData');
-            playerData = {};
+        if (confirm('你确定要退出登录吗？')) {
+            playerData = {}; // 清空当前玩家数据
             
+            // 切换回登录界面
             mainGame.style.display = 'none';
             playerSetup.style.display = 'block';
             
-            setMusicState(false);
+            setMusicState(false); // 关闭音乐
         }
     }
 
@@ -226,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     foundSolutions.add(userInput);
                     playerData.score += 10;
-                    savePlayerData();
+                    saveCurrentPlayerData();
                     updatePlayerInfoDisplay();
                     showResult(true, '恭喜！解法正确！获得10分！');
                     sounds.playCorrectSound();
@@ -360,13 +403,14 @@ function tryExpressionAndAddToSolutions(numbers, op1, op2, op3, solutionsMap) {
     };
 
     const checkAndAdd = (expr) => {
-        if (expr && Math.abs(expr.val - 24) < 1e-10) {
-            // Remove the outermost parentheses for cleaner display
-            const finalStr = expr.str.substring(1, expr.str.length - 1);
-            if (!solutionsMap.has(expr.canonical_str)) {
-                solutionsMap.set(expr.canonical_str, finalStr);
-            }
-        }
+// Preserve original logic but add canonical string normalization
+if (expr && Math.abs(expr.val - 24) < 1e-10) {
+    const finalStr = expr.str.substring(1, expr.str.length - 1);
+    const normalizedCanonical = expr.canonical_str.replace(/\s+/g, '');
+    if (!solutionsMap.has(normalizedCanonical)) {
+        solutionsMap.set(normalizedCanonical, finalStr);
+    }
+}
     };
 
     // Pattern 1: ((a op1 b) op2 c) op3 d
@@ -422,5 +466,5 @@ function tryExpressionAndAddToSolutions(numbers, op1, op2, op3, solutionsMap) {
     }
 
     // --- Initial Load ---
-    initializePlayer();
+    initializeGame();
 });

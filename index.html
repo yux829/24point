@@ -3,12 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>24点游戏</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>24点游戏 - 在线口算益智游戏 | 挑战数学极限</title>
+    <meta name="description" content="快来玩在线24点游戏！一个有趣又益智的数学纸牌游戏，通过加减乘除将4个数字计算得出24。适合所有年龄段的学生和成人，支持多种难度选择，挑战你的心算极限！">
+    <meta name="keywords" content="24点, 算24, 24点游戏, 在线24点, 数学游戏, 益智游戏, 口算, 心算, 纸牌游戏, education, math game, puzzle">
+    <meta name="author" content="xx">
+
+    <!-- Open Graph / Facebook / WeChat -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-website-url.com/"> <!-- 请替换为您的网站URL -->
+    <meta property="og:title" content="24点游戏 - 在线口算益智游戏">
+    <meta property="og:description" content="一个有趣又益智的数学纸牌游戏，通过加减乘除将4个数字计算得出24。">
+    <!-- <meta property="og:image" content="https://your-website-url.com/preview-image.jpg"> --> <!-- 请替换为预览图片的URL -->
+
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-website-url.com/"> <!-- 请替换为您的网站URL -->
+    <meta property="twitter:title" content="24点游戏 - 在线口算益智游戏">
+    <meta property="twitter:description" content="一个有趣又益智的数学纸牌游戏，通过加减乘除将4个数字计算得出24。">
+    <!-- <meta property="twitter:image" content="https://your-website-url.com/preview-image.jpg"> --> <!-- 请替换为预览图片的URL -->
+
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD for Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "24点游戏",
+      "alternateName": "算24",
+      "description": "一个经典有趣的数学益智纸牌游戏，玩家需要利用加、减、乘、除四则运算，将随机抽取的四张牌的牌面凑成24。",
+      "gamePlatform": "http://schema.org/BrowserGame",
+      "applicationCategory": "Game, PuzzleGame",
+      "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+      "inLanguage": "zh-CN",
+      "author": {
+        "@type": "Person",
+        "name": "xx"
+      }
+    }
+    </script>
 </head>
 <body>
-    <div id="playerSetup" class="container">
+    <section id="playerSetup" class="container">
         <h1>玩家信息</h1>
         <div class="setup-form">
             <input type="text" id="playerNameInput" placeholder="输入你的姓名...">
@@ -22,9 +61,9 @@
             </select>
             <button id="savePlayerBtn">开始游戏</button>
         </div>
-    </div>
+    </section>
 
-    <div id="mainGame" class="container" style="display: none;">
+    <main id="mainGame" class="container" style="display: none;">
         <div class="audio-control-container">
             <button id="muteBtn">🔇</button>
         </div>
@@ -34,11 +73,15 @@
         </div>
         <h1>24点游戏</h1>
         <div class="player-info-container">
-            <span id="playerNameDisplay"></span> | 
-            <span id="playerGradeDisplay"></span> | 
-            分数: <span id="playerScoreDisplay">0</span>
-            <button id="resetScoreBtn" class="player-action-btn">重置分数</button>
-            <button id="logoutBtn" class="player-action-btn">退出登录</button>
+            <div class="player-details">
+                <span id="playerNameDisplay"></span> | 
+                <span id="playerGradeDisplay"></span> | 
+                分数: <span id="playerScoreDisplay">0</span>
+            </div>
+            <div class="player-actions">
+                <button id="resetScoreBtn" class="player-action-btn">重置分数</button>
+                <button id="logoutBtn" class="player-action-btn">退出登录</button>
+            </div>
         </div>
         <div class="difficulty-selector-container">
             <label for="difficultySelector">选择难度:</label>
@@ -56,7 +99,7 @@
             </select>
             <button id="startGameBtn">开始游戏</button>
         </div>
-        <div class="game-container" id="gameContainer" style="display: none;">
+        <section class="game-container" id="gameContainer" style="display: none;">
             <div class="numbers-container">
                 <div class="number-card" id="number1"></div>
                 <div class="number-card" id="number2"></div>
@@ -74,9 +117,9 @@
             </div>
             <div id="result" class="result"></div>
             <div id="solutions" class="solutions"></div>
-        </div>
-        <div class="credit">xx制作 202508</div>
-    </div>
+        </section>
+        <footer class="credit">xx制作 202508</footer>
+    </main>
     <audio id="backgroundMusic" src="kb.mp3" loop></audio>
     <script src="sounds.js"></script>
     <script src="script.js"></script>
