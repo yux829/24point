@@ -304,36 +304,6 @@ h1 {
     border: 1px solid #c62828;
 }
 
-/* Solutions List */
-.solutions {
-    margin-top: 20px;
-    text-align: left;
-    max-height: 250px;
-    overflow-y: auto;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.05);
-    display: none; /* Initially hidden */
-    animation: fadeIn 0.5s ease-out;
-}
-
-.solutions.show {
-    display: block;
-}
-
-.solution-item {
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    font-weight: 500;
-    transition: transform 0.2s ease;
-}
-.solution-item:hover {
-    transform: translateX(5px);
-}
-
 /* Loader */
 .loader-container {
     position: absolute;
@@ -407,25 +377,181 @@ h1 {
     .container {
         padding: 20px 15px;
     }
+    /* Responsive styles for Player Setup */
+    #playerSetup .container {
+        padding: 20px;
+    }
+    .setup-form {
+        max-width: 90%;
+        gap: 15px;
+    }
+    .setup-form input,
+    .setup-form select {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    .setup-form button {
+        padding: 12px;
+        font-size: 1rem;
+    }
     h1 {
         font-size: 1.8rem;
     }
     .numbers-container {
         gap: 10px;
+        margin-bottom: 15px; /* Reduce space */
     }
     .number-card {
-        width: 65px;
-        height: 95px;
-        font-size: 2rem;
+        width: 60px;   /* Smaller card */
+        height: 85px;  /* Smaller card */
+        font-size: 1.8rem; /* Smaller font */
+    }
+    .solution-info {
+        margin: 15px 0; /* Reduce space */
     }
     .input-container {
-        flex-direction: column;
+        flex-direction: column; /* Stack everything vertically */
         gap: 10px;
     }
     #solutionInput {
         max-width: 100%;
     }
-    button {
+    .input-container button { /* Ensure all buttons in this container are full-width */
         width: 100%;
     }
+}
+
+/* iPhone7 and smaller screens */
+@media (max-width: 375px) {
+    body {
+        padding: 5px;
+    }
+    .container {
+        padding: 15px 10px;
+    }
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+    .player-info-container {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    .number-card {
+        width: 55px;
+        height: 80px;
+        font-size: 1.7rem;
+    }
+    .solution-info {
+        font-size: 1rem;
+        margin: 10px 0;
+    }
+    #solutionInput {
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+    button {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    .credit {
+        font-size: 0.7rem;
+        bottom: 5px;
+        right: 5px;
+    }
+    .audio-control-container {
+        top: 15px;
+        left: 15px;
+    }
+    .difficulty-selector-container {
+        top: 25px;
+        right: 15px;
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.5); /* Darker semi-transparent background */
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.close-button {
+    color: #888;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modalSolutions {
+    max-height: 50vh; /* Limit height and allow scrolling */
+    overflow-y: auto;
+    padding-right: 10px; /* Space for scrollbar */
+}
+
+#modalSolutions h3 {
+    text-align: center;
+    color: #4a3f8c;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+#modalSolutions p {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.solution-item {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.solution-item:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }

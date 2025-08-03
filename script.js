@@ -30,13 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetScoreBtn = document.getElementById('resetScoreBtn');
     const logoutBtn = document.getElementById('logoutBtn');
 
+    // Modal elements
+    const solutionsModal = document.getElementById('solutionsModal');
+    const modalSolutionsContainer = document.getElementById('modalSolutions');
+    const closeButton = document.querySelector('.close-button');
+
     // 游戏状态
     let currentNumbers = [];
     let allSolutions = [];
     let foundSolutions = new Set(); // 用于存储本局已找到的解法
     let hasViewedSolutions = false; // 用于标记本局是否已查看答案
-let currentDifficulty = 'gold';
-let isMusicPlaying = false;
+    let currentDifficulty = 'gold';
+    let isMusicPlaying = false;
 
     // 难度设置
     const difficulties = {
@@ -170,10 +175,21 @@ let currentPlayerData = {}; // 当前登录的玩家数据
         startGame(selectedDifficulty);
     });
     checkBtn.addEventListener('click', checkSolution);
-    showSolutionBtn.addEventListener('click', showAllSolutions);
+    showSolutionBtn.addEventListener('click', showAllSolutionsInModal);
     newGameBtn.addEventListener('click', () => startGame(currentDifficulty));
     resetScoreBtn.addEventListener('click', resetScore);
     logoutBtn.addEventListener('click', logout);
+
+    // Modal event listeners
+    closeButton.addEventListener('click', () => {
+        solutionsModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == solutionsModal) {
+            solutionsModal.style.display = 'none';
+        }
+    });
 
     function resetScore() {
         if (confirm('你确定要将分数重置为0吗？')) {
@@ -205,7 +221,6 @@ let currentPlayerData = {}; // 当前登录的玩家数据
 
         // Hide old results and solutions using classes
         result.classList.remove('show');
-        solutions.classList.remove('show');
 
         // Animate cards by removing the 'dealt' class, which resets their state
         const cards = [number1, number2, number3, number4];
@@ -215,7 +230,6 @@ let currentPlayerData = {}; // 当前登录的玩家数据
 
         // A short delay allows the loader to be visible and animations to reset properly
         setTimeout(() => {
-            solutions.innerHTML = '';
             solutionInput.value = '';
             
             const success = generateValidNumbers(difficulty);
@@ -237,7 +251,11 @@ let currentPlayerData = {}; // 当前登录的玩家数据
 
     function checkSolution() {
         const userInput = solutionInput.value.trim();
-        if (!userInput) return;
+        if (!userInput) {
+            showResult(false, '请输入你的算式...');
+            solutionInput.focus();
+            return;
+        }
 
         try {
             if (!/^[\d\s\(\)\+\-\*\/\.]+$/.test(userInput)) {
@@ -260,6 +278,7 @@ let currentPlayerData = {}; // 当前登录的玩家数据
             
             if (Math.abs(calculatedResult - 24) < 1e-10) {
                 if (hasViewedSolutions) {
+                    alert('你已经查看过答案了，本次不能得分。');
                     showResult(true, '你已经查看过答案了，本次不能得分。');
                     return;
                 }
@@ -291,20 +310,25 @@ let currentPlayerData = {}; // 当前登录的玩家数据
         result.classList.add('show');
     }
 
-    function showAllSolutions() {
-        hasViewedSolutions = true; // 标记已查看答案
+    function showAllSolutionsInModal() {
+        hasViewedSolutions = true; // Mark that solutions have been viewed
+        modalSolutionsContainer.innerHTML = ''; // Clear previous solutions
+
         if (allSolutions.length === 0) {
-            solutions.innerHTML = '<p>没有找到解法</p>';
+            modalSolutionsContainer.innerHTML = '<p>没有找到解法</p>';
         } else {
-            solutions.innerHTML = '<h3>所有可能的解法：</h3>';
+            const title = document.createElement('h3');
+            title.textContent = '所有可能的解法：';
+            modalSolutionsContainer.appendChild(title);
+
             allSolutions.forEach((solution, index) => {
                 const solutionItem = document.createElement('div');
                 solutionItem.className = 'solution-item';
                 solutionItem.textContent = `${index + 1}. ${solution} = 24`;
-                solutions.appendChild(solutionItem);
+                modalSolutionsContainer.appendChild(solutionItem);
             });
         }
-        solutions.classList.add('show');
+        solutionsModal.style.display = 'flex'; // Show the modal using flex for centering
     }
 
     function generateValidNumbers(difficulty) {
@@ -468,3 +492,7 @@ if (expr && Math.abs(expr.val - 24) < 1e-10) {
     // --- Initial Load ---
     initializeGame();
 });
+
+
+// Global player data object
+let playerData = {};
