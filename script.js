@@ -336,19 +336,19 @@ let currentPlayerData = {}; // 当前登录的玩家数据
         let attempts = 0;
         const maxAttempts = 10000;
 
+        // Keep looping until we find a combination with at least one solution.
+        // This is much faster than finding a specific number of solutions.
         while (!validCombination && attempts < maxAttempts) {
             currentNumbers = Array.from({length: 4}, () => Math.floor(Math.random() * 10) + 1);
             allSolutions = findAllSolutions(currentNumbers);
-            const solutionCount = allSolutions.length;
-            const { min, max } = difficulties[difficulty];
-            if (solutionCount >= min && solutionCount <= max) {
+            if (allSolutions.length > 0) {
                 validCombination = true;
             }
             attempts++;
         }
 
         if (!validCombination) {
-            alert(`无法找到符合'${currentDifficulty}'难度的数组合。请重试或选择其他难度。`);
+            alert(`无法找到有解的数字组合，请刷新页面重试。`);
             return false;
         }
         return true;
